@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Adaugare</title>
+        
+        <link rel="stylesheet" type="text/css" href="../styles/html_events_style.css">
+    </head>
+    <body>
+        <form id="add_event" method="POST" action="/add">
+            Title:<br>
+            <input type="text" name="title" id="title" placeholder="Enter the title of your activity"></input><br>
+            Description:<br>
+            <textarea name="event_description" id="event_description" placeholder="Enter a description for your event"></textarea><br>
+            Number of persons: <br>
+            <input type="number" name="number_persons" id="number_persons" min="1" max="100"><br>
+            Location:<br>
+            <input type="text" name="location" id="location" placeholder="Enter the location of the event"></input><br>
+            <input type="submit" id="add_btn" value="Add your event"></input>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>Activities</title>
+        <style>
+        #block_activity{
+            display: block;
+            background:#F45215;
+            width: 300px;
+        }
+        </style>
+    </head>
+    <body>
+        <%for (var i=0; i<events.length; i++){%>
+            <div id="block_activity">
+                <h1><%=events[i].title%></h1>
+                <p><%=events[i].description%></p>
+                <p><%=events[i].num_persons%></p>
+                <p><%=events[i].location%></p>
+            </div>
+        <%}%>
+    </body>
+</html>
