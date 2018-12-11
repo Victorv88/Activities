@@ -12,16 +12,23 @@
         <script>
         $(document).ready(function(){
             $("div").click(function(){
-                $tok="/activity/"+$(this).children("#token").text();
-                $.post('/activity',{
+                $tok="./activity/"+$(this).children("#token").text();
+               /* $.post('/activity',{
                     title: $(this).children("#title").text(),
                     description: $(this).children("#description").text(),
                     num_persons: $(this).children("#num_persons").text(),
                     location: $(this).children("#location").text(),
                     token:$(this).children("#token").text()
-                });
-              //  url="localhost:3000/activity";
-                //$(location).attr("href",url);
+                });*/
+                $.ajax({
+                    type:'POST',
+                    url:'/activity',
+                    data:"ok",
+                    success:function(data){
+                        window.location.replace($tok);
+                    }
+                })
+              
             });
         });
         </script>
