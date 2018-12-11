@@ -47,7 +47,7 @@ function createToken()
         token=token.concat(String.fromCharCode(randchar));
     }
     return token;
-}
+} 
 
 app.get('/add',function(req,res){
     
@@ -68,31 +68,35 @@ app.post('/add',urlencodedParser, function(req,res){
         console.log("event added");
     });
     res.redirect('/');
+    res.end();
     
 });
 
 app.post("/activity",urlencodedParser,function(req,res){
-    var url_redirect="/activity/"+req.params.token;
-    console.log ("a intrat pe post");
-    res.redirect('/activity/o');
+    res.end("ok");
 });
 
-app.get('/activity/o',function(req,res){
-    res.writeHead(200);
-    res.end("hello world\n");
-    console.log("MARIAN");
-    res.redirect("/abccc");
+app.get('/activity/:token',function(req,res){
+    var token_param=req.params.token;
+    Event.find({token:token_param},function(err,data){
+        if (err) throw err;
+        res.render('selected_activity_page',{title: data[0].title, description: data[0].description, num_persons: data[0].num_persons, location: data[0].location, token: "/activity/"+data[0].token});
+        res.end();
+    });
 });
 
-app.get("/abccc",function(req,res){
-    res.writeHead(200);
-    res.end("hello world\n");
+app.post('/activity/:token',function(req,res){
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    console.log(req.params.token);
 });
+
+
 
 app.get('/', function(req,res){
     Event.find({},function(err,data){
         if (err) throw err;
         res.render('activities_page',{events: data});
+        res.end();
     });
 });
 

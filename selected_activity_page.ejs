@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Activity</title>
+        <style>
+            #selected_activity_form{
+                background:lightseagreen;
+                text-align: center;
+            }
+            #btn{
+                width:200px;
+                height:50px;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="selected_activity_form" method="POST" action=<%=token%>>
+            <h1><%=title%></h1>
+            <h3><%=description%></h3>
+            <h2><%=num_persons%></h2>
+            <h2><%=location%></h2>
+            <p><%=token%></p>
+            <input type="submit" value="click" name="btn" id="btn"/>
+        </form>
+    </body>
+</html>
