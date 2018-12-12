@@ -1,8 +1,10 @@
 <html>
     <head>
         <title>Activity</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
         <style>
-            #selected_activity_form{
+            #selected_activity_div{
                 background:lightseagreen;
                 text-align: center;
             }
@@ -11,15 +13,49 @@
                 height:50px;
             }
         </style>
+        <script>
+        $(document).ready(function() {
+         $("#btn").click(function(){
+            var num_text=$("#num_persons").text();
+            var num=parseInt(num_text);
+            var url_split=$("#token").text().split('/');
+            var token_delete='/delete/'+url_split[2];
+            var token_update='/update/'+url_split[2];
+            if (num==1)
+            {
+                $.ajax({
+                    type:'POST',
+                    url:token_delete,
+                    data:"ok",
+                    success:function(data){
+                        window.location.replace('../');
+                    }
+                })
+            }
+            else
+            {
+                $.ajax({
+                    type:'POST',
+                    url:token_update,
+                    data:{updated_value:num-1},
+                    success:function(data){
+                        window.location.replace('../');
+                    }
+                })
+            }
+         }); 
+        });
+        </script>
+
     </head>
     <body>
-        <form id="selected_activity_form" method="POST" action=<%=token%>>
-            <h1><%=title%></h1>
-            <h3><%=description%></h3>
-            <h2><%=num_persons%></h2>
-            <h2><%=location%></h2>
-            <p><%=token%></p>
-            <input type="submit" value="click" name="btn" id="btn"/>
-        </form>
+    <div id="selected_activity_div">
+            <h1 name="title" id="title"><%=title%></h1>
+            <h3 name="description" id="description"><%=description%></h3>
+            <h2 name="num_persons" id="num_persons"><%=num_persons%></h2>
+            <h2 name="location" id="location"><%=location%></h2>
+            <p name="token" id="token"><%=token%></p>
+            <input type=button id="btn" name="btn" value="Particip">
+     </div>
     </body>
 </html>
