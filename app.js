@@ -55,7 +55,6 @@ app.get('/add',function(req,res){
 });
 
 app.post('/add',urlencodedParser, function(req,res){
-    console.log(req.body);
     var title = req.body.title;
     var event_description = req.body.event_description;
     var number_persons = req.body.number_persons;
@@ -65,7 +64,8 @@ app.post('/add',urlencodedParser, function(req,res){
     var event = Event({title:title, description:event_description, num_persons:number_persons, location:location, token:token});
     event.save(function(err){
         if (err) throw err;
-        console.log("event added");
+        console.log("Event added");
+        console.log(req.body);
     });
     res.redirect('/');
     res.end();
@@ -85,11 +85,29 @@ app.get('/activity/:token',function(req,res){
     });
 });
 
-app.post('/activity/:token',function(req,res){
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log(req.params.token);
+/// Cand participi la un eveniment si numarul de locuri libere ramase ==1
+
+
+app.post('/delete/:token',urlencodedParser,function(req,res){
+    var token_param=req.params.token;
+    Event.remove({token:token_param},function(err){
+        if (err) throw err;
+        console.log("Event deleted");
+        res.end("OK");
+    });
 });
 
+/// Cand participi la un eveniment si numarul de locuri libere ramase !=1
+
+app.post('/update/:token', urlencodedParser, function(req,res){
+    var token_param=req.params.token;
+    Event.findOneAndUpdate({token:token_param},{$set:{num_persons:req.body.updated_value}},function(err,doc){
+        if (err) throw err;
+        console.log("Number of persons edited");
+        
+        res.end("OK");
+    });
+});
 
 
 app.get('/', function(req,res){
