@@ -1,0 +1,19 @@
+body{
+    background: greenyellow;
+}
+#title{
+    width:400px;
+}
+#event_description{
+    height:100px;
+    width:400px;
+}
+#number_persons{
+    width:400px;
+}
+#location{
+    width:400px;
+}
+#add_btn{
+    margin-top:20px;
+}

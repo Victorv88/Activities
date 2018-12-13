@@ -1,0 +1,19 @@
+{
+  "name": "events-project",
+  "version": "1.0.0",
+  "description": "events project with login",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marian",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mongoose": "^5.3.14",
+    "uuid": "^3.3.2"
+  }
+}
