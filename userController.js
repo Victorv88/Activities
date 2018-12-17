@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 
 var parser = bodyParser.urlencoded({extended: false});
 
-mongoose.connect('mongodb://eventsapp:eventsapp123@ds235833.mlab.com:35833/eventsapp')
+mongoose.connect('mongodb://eventsapp:eventsapp123@ds235833.mlab.com:35833/eventsapp', {useNewUrlParser: true})
 
 var dataSchema = new mongoose.Schema({
   username: String,
@@ -33,20 +33,26 @@ module.exports.main = function(app) {
     Data.findOne({username: req.body.username}).then(function(result) {
       /// If they are not already registered, save his account data, otherwise tell the user the name is already taken/the account is already registered
       if (result === null) {
-        /// Generate a unique token used for sesssion
+        /// Generate a unique token used for the sesssion
         var newToken = uuidv4();
+        var message = 'You have registered successfully!';
+        var title = 'Succes';
         console.log(newToken);
         var newUserData = Data({username: req.body.username, password: req.body.password, token: newToken}).save(function(err, data) {
           if (err) throw err;
         });
-        res.render('registersuccessful');
+        res.render('messagePage', {message: message, title: title});
       }
       else {
         if (result.password === req.body.password) {
-          res.render('registerunsuccessful');
+          var message = 'You are already registered!';
+          var title = 'Already registered';
+          res.render('messagePage', {message: message, title: title});
         }
         else {
-          res.render('registernamealreadytaken');
+          var message = 'The username is already taken!';
+          var title = 'Username taken';
+          res.render('messagePage', {message: message, title: title});
         }
       }
     });
@@ -66,13 +72,16 @@ module.exports.main = function(app) {
     Data.findOne({username: req.body.username, password: req.body.password}).then(function(result) {
       ///If the data is found, log the user in, otherwise prompt them to the invalid log in credentials screen
       if (result === null) {
-        console.log("Not found.");
-        res.render('loginunsuccessful');
+        var message = 'Incorrect username or password.';
+        var title = 'Log in failed';
+        console.log('Not found.');
+        res.render('messagePage', {message: message, title: title});
       }
       else {
         sess.token = result.token;
-        console.log("Found.");
-        res.render('loginsuccessful');
+        sess.username = result.username;
+        console.log('Found.');
+        res.redirect('/');
       }
     });
   });

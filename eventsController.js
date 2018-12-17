@@ -2,7 +2,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var userController = require('./userController.js');
 
-mongoose.connect('mongodb://eventsapp:eventsapp123@ds235833.mlab.com:35833/eventsapp');
+mongoose.connect('mongodb://eventsapp:eventsapp123@ds235833.mlab.com:35833/eventsapp', {useNewUrlParser: true});
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
@@ -12,7 +12,8 @@ var eventSchema = new mongoose.Schema({
     description: String,
     num_persons: Number,
     location: String,
-    token: String
+    token: String,
+    ownerToken: String
 });
 
 var Event = mongoose.model('Event', eventSchema);
@@ -50,21 +51,31 @@ module.exports = function(app) {
   });
 
   app.post('/add',urlencodedParser, function(req,res){
-      var title = req.body.title;
-      var event_description = req.body.event_description;
-      var number_persons = req.body.number_persons;
-      var location = req.body.location;
-      var token = createToken();
+      var sess = req.session;
 
-      var event = Event({title:title, description:event_description, num_persons:number_persons, location:location, token:token});
-      event.save(function(err){
+      if (!sess.token) {
+        var message = 'Command unavailable. You are not logged in.';
+        var title = 'Error';
+        res.render('messagePage.ejs', {message: message, title: title});
+      }
+      else {
+        var sess = req.session;
+        var title = req.body.title;
+        var event_description = req.body.event_description;
+        var number_persons = req.body.number_persons;
+        var location = req.body.location;
+        var token = createToken();
+
+        var event = Event({title:title, description:event_description, num_persons:number_persons,
+          location:location, token:token, ownerToken: sess.token});
+        event.save(function(err){
           if (err) throw err;
-          console.log("The event has been saved.");
-      });
-      userController.updateOwnedEvents(req, token);
-      res.redirect('/');
-      res.end();
-
+          console.log('The event has been saved.');
+        });
+        userController.updateOwnedEvents(req, token);
+        res.redirect('/');
+        res.end();
+      }
   });
 
   app.post("/activity",urlencodedParser,function(req,res){
@@ -75,15 +86,11 @@ module.exports = function(app) {
       var token_param=req.params.token;
       Event.find({token:token_param},function(err,data){
           if (err) throw err;
-          res.render('selected_activity_page',{title: data[0].title, description: data[0].description, num_persons: data[0].num_persons, location: data[0].location, token: "/activity/"+data[0].token});
+          res.render('selected_activity_page',{title: data[0].title, description: data[0].description, num_persons: data[0].num_persons,
+             location: data[0].location, token: "/activity/"+data[0].token});
           res.end();
       });
   });
-  /***
-  app.post('/activity/:token',function(req,res){
-      var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-      console.log(req.params.token);
-  });*/
 
   /// Cand participi la un eveniment si numarul de locuri libere ramase ==1
 
@@ -108,18 +115,20 @@ module.exports = function(app) {
       userController.updateJoinedEvents(req, token_param);
   });
 
-  app.get('/', function(req,res){
-      var sess = req.session, loggedin;
-      if (req.session.token) {
-        loggedin = 1;
-      }
-      else {
-        loggedin = 0;
-      }
+  app.get('/', function(req,res) {
+      var sess = req.session;
+      var loggedIn = (sess.token != null);
       Event.find({},function(err,data){
           if (err) throw err;
-          res.render('activities_page', {events: data, loggedin: loggedin});
+          res.render('activities_page', {events: data, loggedin: loggedIn});
           res.end();
       });
+  });
+  app.get('/profile', function(req, res) {
+    var sess = req.session;
+    Event.find({ownerToken: sess.token}, function(err, data) {
+      if (err) throw err;
+      res.render('profile', {events: data, name: sess.username});
+    });
   });
 };
