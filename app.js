@@ -10,7 +10,11 @@ app.set('view engine', 'ejs');
 
 app.use('/styles', express.static('styles'));
 
-app.use(session({secret: "random", cookie:{maxAge: 60 * minute}}));
+app.use(session({
+  secret: "random",
+  cookie: {maxAge: 60 * minute},
+  resave: true
+}));
 
 userController.main(app);
 

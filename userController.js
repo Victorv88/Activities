@@ -1,6 +1,5 @@
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var session = require('express-session');
 const uuidv4 = require('uuid/v4');
 
 var parser = bodyParser.urlencoded({extended: false});
