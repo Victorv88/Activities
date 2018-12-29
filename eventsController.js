@@ -52,8 +52,9 @@ module.exports = function(app) {
 
   app.post('/add',urlencodedParser, function(req,res){
       var sess = req.session;
-
-      if (!sess.token) {
+      var loggedIn = (sess.token != null);
+      console.log(loggedIn);
+      if (!loggedIn) {
         var message = 'Command unavailable. You are not logged in.';
         var title = 'Error';
         res.render('messagePage.ejs', {message: message, title: title});
@@ -84,10 +85,12 @@ module.exports = function(app) {
 
   app.get('/activity/:token',function(req,res){
       var token_param=req.params.token;
+      var sess = req.session;
+      var loggedIn = (sess.token != null);
       Event.find({token:token_param},function(err,data){
           if (err) throw err;
           res.render('selected_activity_page',{title: data[0].title, description: data[0].description, num_persons: data[0].num_persons,
-             location: data[0].location, token: "/activity/"+data[0].token});
+             location: data[0].location, token: "/activity/"+data[0].token, loggedIn:loggedIn});
           res.end();
       });
   });
@@ -120,7 +123,7 @@ module.exports = function(app) {
       var loggedIn = (sess.token != null);
       Event.find({},function(err,data){
           if (err) throw err;
-          res.render('activities_page', {events: data, loggedin: loggedIn});
+          res.render('activities_page', {events: data, loggedIn: loggedIn});
           res.end();
       });
   });

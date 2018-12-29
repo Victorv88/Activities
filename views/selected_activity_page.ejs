@@ -15,33 +15,43 @@
         </style>
         <script>
         $(document).ready(function() {
-         $("#btn").click(function(){
-            var num_text=$("#num_persons").text();
-            var num=parseInt(num_text);
-            var url_split=$("#token").text().split('/');
-            var token_delete='/delete/'+url_split[2];
-            var token_update='/update/'+url_split[2];
-            if (num==1)
-            {
-                $.ajax({
-                    type:'POST',
-                    url:token_delete,
-                    data:"ok",
-                    success:function(data){
-                        window.location.replace('../');
-                    }
-                })
+          $("#btn").click(function(){
+            var loggedIn = $('#loggedIn').text();
+            if (loggedIn == 'false') {
+              $.ajax({
+                success:function() {
+                  window.location.replace('/login');
+                }
+              })
             }
-            else
-            {
+            else {
+              var num_text=$("#num_persons").text();
+              var num=parseInt(num_text);
+              var url_split=$("#token").text().split('/');
+              var token_delete='/delete/'+url_split[2];
+              var token_update='/update/'+url_split[2];
+              if (num==1)
+              {
                 $.ajax({
-                    type:'POST',
-                    url:token_update,
-                    data:{updated_value:num-1},
-                    success:function(data){
-                        window.location.replace('../');
-                    }
+                  type:'POST',
+                  url:token_delete,
+                  data:"ok",
+                  success:function(data){
+                    window.location.replace('../');
+                  }
                 })
+              }
+              else
+              {
+                $.ajax({
+                  type:'POST',
+                  url:token_update,
+                  data:{updated_value:num-1},
+                  success:function(data){
+                    window.location.replace('../');
+                  }
+                })
+              }
             }
          });
         });
@@ -57,5 +67,6 @@
             <p name="token" id="token"><%=token%></p>
             <input type=button id="btn" name="btn" value="Particip">
      </div>
+     <p style="visibility: hidden" name="loggedIn" id="loggedIn"><%=loggedIn%></p>
     </body>
 </html>
