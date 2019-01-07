@@ -149,7 +149,6 @@ module.exports = function(app) {
       Event.find({},function(err,data){
           if (err) throw err;
           res.render('activities_page', {events: data, loggedIn: loggedIn});
-          res.end();
       });
   });
   app.get('/profile', function(req, res) {
