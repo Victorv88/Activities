@@ -1,11 +1,27 @@
 <html>
   <head>
     <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="../styles/login_styles.css">
+
+    <script>
+      function redirect_register(){
+          window.location.replace("./register");
+      }
+    </script>
+
   </head>
   <body>
-    <form id="logInUserAccount" method="POST" action="/login">
-      <input type="text" name="username" placeholder="Username..." maxlength=12 required />
-      <input type="password" name="password" placeholder="Password..." maxlength=20 required />
-      <button type="submit">Log in</button>
+      <div class="login">
+        <div class="login-triangle"></div>
+        
+        <h2 class="login-header">Log in</h2>
+      
+        <form class="login-container" id="logInUserAccount" method="POST" action="/login">
+          <p><input type="text" name="username" placeholder="Username..." maxlength=12 required ></p>
+          <p><input type="password" name="password" placeholder="Password..." maxlength=20 required ></p>
+          <p><input type="submit" value="Log in"></p>
+          <a href="localhost:3000/register">Click Here To Register</a>
+        </form>
+      </div>
   </body>
 </html>

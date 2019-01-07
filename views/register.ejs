@@ -1,11 +1,18 @@
 <html>
   <head>
     <title>Register Page</title>
+    <link rel="stylesheet" type="text/css" href="../styles/register_styles.css">
   </head>
   <body>
-    <form id="registerUser" method="POST" action="/register">
-      <input type="text" name="username" placeholder="Username..." maxlength=12 required />
-      <input type="password" name="password" placeholder="Password..." maxlength=20 required />
-      <button type="submit">Sign in</button>
+      <div class="register">
+        <div class="register-triangle"></div>
+
+        <h2 class="register-header">Log in</h2>
+        <form class="register-container" id="registerUser" method="POST" action="/register">
+          <p><input type="text" name="username" placeholder="Username..." maxlength=12 required ></p>
+          <p><input type="password" name="password" placeholder="Password..." maxlength=20 required ></p>
+          <p><input type="submit" value="Sign in"></p>
+        </form>
+      </div>
   </body>
 </html>
