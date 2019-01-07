@@ -13,7 +13,8 @@ app.use('/styles', express.static('styles'));
 app.use(session({
   secret: "random",
   cookie: {maxAge: 60 * minute},
-  resave: true
+  resave: false,
+  saveUninitialized: false
 }));
 
 userController.main(app);

@@ -98,7 +98,7 @@ module.exports.main = function(app) {
 
 module.exports.updateOwnedEvents = function(req, eventToken) {
   var sess = req.session;
-  Data.findOne({token: sess.token}).then(function(result) {
+  /**Data.findOne({token: sess.token}).then(function(result) {
     var newActivities = [];
     newActivities = result.ownedActivities;
     newActivities.push(eventToken);
@@ -110,12 +110,16 @@ module.exports.updateOwnedEvents = function(req, eventToken) {
     .catch(function(err) {
       throw(err);
     });
+  });*/
+  Data.findOneAndUpdate({token: sess.token}, {$push: {ownedActivities: eventToken}}, function(err, result){
+    if (err) throw err;
+    console.log('List of joined events updated.');
   });
 };
 
 module.exports.updateJoinedEvents = function(req, eventToken) {
   var sess = req.session;
-  Data.findOne({token: sess.token}).then(function(result) {
+  /**Data.findOne({token: sess.token}).then(function(result) {
     var newActivites = [];
     newActivities = result.joinedActivities;
     newActivities.push(eventToken);
@@ -127,5 +131,9 @@ module.exports.updateJoinedEvents = function(req, eventToken) {
     .catch(function(error) {
       throw(err);
     });
+  });*/
+  Data.findOneAndUpdate({token: sess.token}, {$push: {joinedActivities: eventToken}}, function(err, result){
+    if (err) throw err;
+    console.log('List of joined events updated.');
   });
 };

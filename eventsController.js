@@ -13,7 +13,8 @@ var eventSchema = new mongoose.Schema({
     num_persons: Number,
     location: String,
     token: String,
-    ownerToken: String
+    ownerToken: String,
+    participants: String
 });
 
 var Event = mongoose.model('Event', eventSchema);
@@ -72,10 +73,10 @@ module.exports = function(app) {
         event.save(function(err){
           if (err) throw err;
           console.log('The event has been saved.');
+          res.redirect('/');
+          res.end();
         });
         userController.updateOwnedEvents(req, token);
-        res.redirect('/');
-        res.end();
       }
   });
 
@@ -110,12 +111,36 @@ module.exports = function(app) {
 
   app.post('/update/:token', urlencodedParser, function(req,res){
       var token_param=req.params.token;
-      Event.findOneAndUpdate({token:token_param},{$set:{num_persons:req.body.updated_value}},function(err,doc){
+      var sess = req.session;
+      /** Event.findOneAndUpdate({token:token_param, {$set:{num_persons:req.body.updated_value}},function(err,doc){
           if (err) throw err;
           console.log("Number of persons edited");
           res.end("OK");
+      }); */
+      Event.findOne({token: token_param}, function(err, result) {
+        if (err) throw err;
+        if (result.ownerToken == sess.token) {
+          res.render('messagePage', {title:"Error", message: "You are the owner of the event."});
+        }
+        else {
+          var ok = false;
+          if (result.participants == undefined)
+          ok = true;
+          else if (!result.participants.includes(sess.token))
+          ok = true;
+          if (ok) {
+            Event.updateOne({token: token_param}, {$push: {participants: sess.token}, $set: {num_persons: req.body.updated_value}}, function(err) {
+              if (err) throw err;
+              console.log("Number of persons edited.");
+              res.redirect('/');
+            });
+            userController.updateJoinedEvents(req, token_param);
+          }
+          else {
+            res.render('messagePage', {title: "Error", message: "You have already joined this event."});
+          }
+        }
       });
-      userController.updateJoinedEvents(req, token_param);
   });
 
   app.get('/', function(req,res) {
