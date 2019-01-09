@@ -5,14 +5,23 @@
   </head>
   <body>
       <div class="register">
+        <% if (errors) {%>
+          <div class="errorMessages">
+          <%errors.forEach(function(message) {%>
+            <p><%=message%></p>
+          <%})%>
+          </div>
+        <%}%>
         <div class="register-triangle"></div>
 
         <h2 class="register-header">Sign Up</h2>
         <form class="register-container" id="registerUser" method="POST" action="/register">
-          <p><input type="text" name="username" placeholder="Username..." maxlength=12 required ></p>
-          <p><input type="password" name="password" placeholder="Password..." maxlength=20 required ></p>
+          <p><input type="text" name="username" placeholder="Username..." maxlength=15 required></p>
+          <p><input type="text" name="email" placeholder="Email adress..." required></p>
+          <p><input type="password" name="password" placeholder="Password..." maxlength=20 required></p>
+          <p><input type="password" name="confirmPassword" placeholder="Confirm password..." maxlength=20 required></p>
           <p><input type="submit" value="Sign Up"></p>
-          <a href="/login">Already signed in? Click here.</a>
+          <a href="/login">Already signed up? Click here.</a>
         </form>
       </div>
   </body>
