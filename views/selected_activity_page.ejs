@@ -16,26 +16,34 @@
 
     </head>
     <body>
-    <div id="selected_activity_div">
+        <div id="selected_activity_div">
             <h1 name="title" id="title"><%=title%></h1>
             <h3 name="description" id="description"><%=description%></h3>
             <h2 name="num_persons" id="num_persons"><%=num_persons%></h2>
             <h2 name="location" id="location"><%=location%></h2>
             <p name="token" id="token"><%=token%></p>
             <% if (loggedIn) {
-              var urlSplit = token.split("/");
-              tokenUpdate = '/update/' + urlSplit[2];
-              %>
+              var tokenUpdate = '/update/' + token; %>
               <form id="button" method="POST" action="<%=tokenUpdate%>">
-                <input type="submit" value="Particip"></input>
+                <input type="submit" value="Join activity"></input>
               </form>
             <%}
             else {%>
               <form id="button" method="GET" action="/login">
-                <input type="submit" value="Particip"></input>
+                <input type="submit" value="Join activity"></input>
               </form>
             <%}%>
-     </div>
-     <p style="visibility: hidden" name="loggedIn" id="loggedIn"><%=loggedIn%></p>
+      </div>
+      <% var addComment = '/add-comment/' + token; %>
+      <form id="commentBox" method="POST" action="<%=addComment%>">
+        <input type="text" name="comment" placeholder="Write a comment here..." required >
+        <input type="submit" value="Add comment"></input>
+      </form>
+      <div id="commentSection">
+        <%for (var i=0; i<comments.length; i++){%>
+          <p><%=commentsOwners[i]%></p>
+          <p><%=comments[i]%></p>
+        <%}%>
+      </div>
     </body>
 </html>

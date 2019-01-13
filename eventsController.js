@@ -14,7 +14,9 @@ var eventSchema = new mongoose.Schema({
     location: String,
     token: String,
     ownerToken: String,
-    participants: String
+    participants: Array,
+    comments: Array,
+    commentsOwners: Array
 });
 
 var Event = mongoose.model('Event', eventSchema);
@@ -88,12 +90,27 @@ module.exports = function(app) {
       var token_param=req.params.token;
       var sess = req.session;
       var loggedIn = (sess.token != null);
-      Event.find({token:token_param},function(err,data){
+      Event.findOne({token:token_param},function(err, result) {
           if (err) throw err;
-          res.render('selected_activity_page',{title: data[0].title, description: data[0].description, num_persons: data[0].num_persons,
-             location: data[0].location, token: "/activity/"+data[0].token, loggedIn:loggedIn});
+          res.render('selected_activity_page',{title: result.title, description: result.description, num_persons: result.num_persons,
+             location: result.location, token: result.token, loggedIn:loggedIn, comments: result.comments, commentsOwners: result.commentsOwners});
           res.end();
       });
+  });
+
+  app.post('/add-comment/:token', urlencodedParser, function(req, res) {
+    var eventToken = req.params.token;
+    var loggedIn = (req.session.token != null);
+    if (loggedIn) {
+      Event.findOneAndUpdate({token: eventToken}, {$push: {comments: req.body.comment, commentsOwners: req.session.username}}, function(err) {
+        if (err) throw err;
+        console.log("Comment added.");
+        res.redirect('/activity/' + eventToken);
+      });
+    }
+    else {
+      res.render('messagePage', {title: 'Error', message: 'Command unavailable. You are not logged in.'});
+    }
   });
 
   /// Cand participi la un eveniment si numarul de locuri libere ramase ==1
@@ -112,11 +129,6 @@ module.exports = function(app) {
   app.post('/update/:token', urlencodedParser, function(req,res){
       var token_param=req.params.token;
       var sess = req.session;
-      /** Event.findOneAndUpdate({token:token_param, {$set:{num_persons:req.body.updated_value}},function(err,doc){
-          if (err) throw err;
-          console.log("Number of persons edited");
-          res.end("OK");
-      }); */
       Event.findOne({token: token_param}, function(err, result) {
         if (err) throw err;
         if (result.ownerToken == sess.token) {
@@ -129,7 +141,7 @@ module.exports = function(app) {
           else if (!result.participants.includes(sess.token))
           ok = true;
           if (ok) {
-            Event.updateOne({token: token_param}, {$push: {participants: sess.token}, $set: {num_persons: req.body.updated_value}}, function(err) {
+            Event.updateOne({token: token_param}, {$push: {participants: sess.token}, $inc: {num_persons: -1}}, function(err) {
               if (err) throw err;
               console.log("Number of persons edited.");
               res.redirect('/');
@@ -144,18 +156,24 @@ module.exports = function(app) {
   });
 
   app.get('/', function(req,res) {
-      var sess = req.session;
-      var loggedIn = (sess.token != null);
+      var loggedIn = (req.session.token != null);
       Event.find({},function(err,data){
           if (err) throw err;
           res.render('activities_page', {events: data, loggedIn: loggedIn});
       });
   });
-  app.get('/profile', function(req, res) {
-    var sess = req.session;
-    Event.find({ownerToken: sess.token}, function(err, data) {
+  app.get('/my-activities', function(req, res) {
+    var loggedIn = (req.session.token != null);
+    Event.find({ownerToken: req.session.token}, function(err, data) {
       if (err) throw err;
-      res.render('profile', {events: data, name: sess.username});
+      res.render('activities_page', {events: data, loggedIn: loggedIn});
+    });
+  });
+  app.get('/joined-activities', function(req, res) {
+    var loggedIn = (req.session.token != null);
+    Event.find({participants: req.session.token}, function(err, data) {
+      if (err) throw err;
+      res.render('activities_page', {events:data, loggedIn: loggedIn});
     });
   });
 };
