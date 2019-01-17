@@ -9,6 +9,7 @@ var minute = 60000;
 app.set('view engine', 'ejs');
 
 app.use('/styles', express.static('styles'));
+app.use(express.static('./views'));
 
 app.use(session({
   secret: "random",
