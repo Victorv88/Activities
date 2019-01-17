@@ -1,0 +1,142 @@
+<html>
+
+<head>
+    <title>Activities</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../styles/main_page_styles.css">
+
+    
+
+    <script>
+        /* When the user clicks on the button, 
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+    <div class="top-bar">
+        <img src="./Logo.png" width="168" height="58" />
+        <div class="dropdown" id="menu">
+            <button onclick="myFunction()" class="dropbtn"><i class="fa fa-bars" id="iconbars"></i>
+            </button>
+            <div id="myDropdown" class="dropdown-content">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+        <div class="row" id="form_cautare">
+            <div class="col-5">
+                <div class="form-row">
+                    <div class="col-6" id="text_inp">
+                        <input id="search_input" style="display:inline" type="text" class="form-control" placeholder="Search an activity">
+                    </div>
+                    <div class="form-group mb-2 mr-sm-2">
+                        <select id="inputState" class="form-control">
+                            <option selected>Title</option>
+                            <option>Number of persons</option>
+                            <option>Location</option>
+                            <option>Owner of the event</option>
+                        </select>
+                    </div>
+                    <button id="btn" style="display:inline" type="submit" class="btn btn-primary" onclick="filterFunction()">Sign in</button>
+                </div>
+            </div>
+        </div>
+    
+    <div class="card-group" id="block_activity">
+        <%for (var i=0; i<events.length; i++){%>
+        <div class="col-4">
+            <form class="card" id="card<%=i%>" method="GET" action="/activity/<%=events[i].token%>">
+                <div class="card-body">
+                    <h4 class="card-title" id="title">
+                        <%=events[i].title%>
+                    </h4>
+                    <p class="card-text-d" id="description">
+                        <%=events[i].description%>
+                    </p>
+                    <p class="card-text-n" id="num_persons">
+                        <%=events[i].num_persons%>
+                    </p>
+                    <p class="card-text-l" id="location">
+                        <%=events[i].location%>
+                    </p>
+                    <input type="submit" class="btn btn-primary" id="btn_activity" value="See Description"></input>
+                </div>
+            </form>
+        </div>
+        <%}%>
+        <p id="txt"></p>
+    </div>
+
+    <script>
+        function filterFunction() {
+            var input, filter, optiune_aleasa, card_group, txt_value, grupa, optiuni;
+            var valoare_aleasa_cautare;
+            optiuni = document.getElementById("inputState");
+            valoare_aleasa_cautare = optiuni.selectedIndex;
+            input = document.getElementById("search_input");
+            filter = input.value.toUpperCase();
+            card_group = document.getElementById("block_activity");
+            grupa = card_group.getElementsByClassName("col-4");
+            if (valoare_aleasa_cautare == 0) {
+                
+                optiune_aleasa = card_group.getElementsByTagName("h4");
+            }
+            
+            else if (valoare_aleasa_cautare==1){
+                optiune_aleasa=card_group.getElementsByClassName("card-text-n");
+            }
+            else if (valoare_aleasa_cautare==2)
+            {
+                optiune_aleasa=card_group.getElementsByClassName("card-text-l");
+            }
+            else if (valoare_aleasa_cautare==3)
+            {
+                optiune_aleasa=card_group.getElementsByClassName("card-text-d");
+            }
+
+            var ind = 0, l = optiune_aleasa.length;
+                while (ind < l) {
+                    txtValue = optiune_aleasa[ind].textContent || optiune_aleasa[ind].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        grupa[ind].style.display = "";
+                    } else {
+                        grupa[ind].style.display = "none";
+                    }
+                    ind++;
+                }
+        }
+    </script>
+
+</body>
+
+</html>
