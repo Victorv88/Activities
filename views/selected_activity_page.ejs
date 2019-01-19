@@ -3,13 +3,21 @@
 <head>
   <title>Activity</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
   <style>
     #selected_activity_div{
-                background:lightseagreen;
-                text-align: center;
+                background:#DCDCDC;
+                margin-left:15%;
+                margin-right:15%;
+                width:auto;
+                overflow:overlay;
+                border-color:#DCDCDC;
+                white-space: normal;
+                border-radius: 15px;
+                word-wrap: break-word;
             }
             #btn{
                 width:200px;
@@ -21,15 +29,21 @@
               margin-left:20px;
               width:85%;
             }
+            #commentSection{
+                margin-left:15%;
+                margin-right:15%;
+            }
             #comment_entered{
-              margin-left:20px;
+              margin-left:23%;
+              margin-right:15%;
               width:34%;
             }
 
             #participants{
               justify-content : left;
               align-items : left;
-              margin-left: 20px;
+              margin-left: 15%;
+              margin-right:15%;
             margin-bottom: 50px;
             }
             #footer{
@@ -39,6 +53,34 @@
             #owner{
                 font-weight: bold;
             }
+
+            
+
+
+            .logo-small {
+            color: #f4511e;
+            font-size: 50px;
+        }
+        #event_description{
+            position:relative;
+            margin-left:15%;
+            width:auto;
+        }
+
+        #icon_description{
+            left:50%;
+        }
+
+        #description{
+            position:relative;
+            width:100%;
+            padding-left:15%;
+            padding-right:15%;
+            margin-left:0px;
+            margin-right:0px;
+        }
+
+        
         </style>
 
 </head>
@@ -46,32 +88,44 @@
 <body>
 
   <div id="selected_activity_div">
-    <h1 name="title" id="title">
-      <%=title%>
-    </h1>
-    <h3 name="description" id="description">
-      Description:
-      <br>
-      <%=description%>
-    </h3>
-    <p name="owner" id="num_persons">
-      Owned by: <%=ownerName%>
-    </p>
-    <p name="num_persons" id="num_persons">
-      Number of participants: <%=num_persons%>
-    </p>
-    <p name="location" id="location">
-      Location: <%=location%>
-    </p>
+        <div class="row" id="event_description">
+                <div class="col-sm-3">
+                    <span class="glyphicon glyphicon-text-height logo-small"></span>
+                    <h3>Title:</h3>
+                    <h4><%=title%></h4>
+                </div>
+                <div class="col-sm-3">
+                    <span class="glyphicon glyphicon-user logo-small"></span>
+                    <h3>Number of persons:</h3>
+                    <h4><%=num_persons%></h4>
+                </div>
+                <div class="col-sm-3">
+                    <span class="glyphicon glyphicon-map-marker logo-small"></span>
+                    <h3>Location:</h3>
+                    <h4><%=location%></h4>
+                </div>
+                <div class="col-sm-3">
+                    <span class="glyphicon glyphicon-console logo-small"></span>
+                    <h3>Owner of the activity</h3>
+                    <h4><%=ownerName%></h4>
+                </div>
+            </div>
+            <div class="container">
+                    <span class="glyphicon glyphicon-text-height logo-small" id="icon_description"></span>
+                    <h3 style="text-align: center"> Description:</h3>
+                    <h4  id="description" style="text-align: center">
+                    cuvant propozitie a b cuvanta cuvant propozitie a b cuvanta cuvant propozitie a b cuvanta v cuvant propozitie a b cuvanta cuvant propozitie a b cuvanta cuvant propozitie a b cuvanta cuvant propozitie a b cuvanta cuvant propozitie a b cuvanta
+                    </h4>
+            </div>
     <% if (loggedIn) {
               var tokenUpdate = '/update/' + token; %>
     <form id="button" method="POST" action="<%=tokenUpdate%>">
-      <input type="submit" value="Join activity"></input>
+            <button type="submit" class="btn btn-primary" id="add_btn" style="position:relative;left:50%">Submit</button>
     </form>
     <%}
             else {%>
     <form id="button" method="GET" action="/login">
-      <input type="submit" value="Join activity"></input>
+        <button type="submit" class="btn btn-primary" id="add_btn" style="position:relative;left:50%">Submit</button>
     </form>
     <%}%>
   </div>
