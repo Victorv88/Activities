@@ -1,3 +1,191 @@
+<<<<<<< HEAD
+<html>
+
+<head>
+  <title>Activity</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <style>
+    #selected_activity_div{
+                background:#DCDCDC;
+                margin-left:15%;
+                margin-right:15%;
+                width:auto;
+                overflow:overlay;
+                border-color:#DCDCDC;
+                white-space: normal;
+                border-radius: 15px;
+                word-wrap: break-word;
+            }
+            #btn{
+                width:200px;
+                height:50px;
+            }
+            #comment{
+              padding-top:20px;
+              padding-bottom:20px;
+              margin-left:20px;
+              width:85%;
+            }
+            #commentSection{
+                margin-left:15%;
+                margin-right:15%;
+            }
+            #comment_entered{
+              margin-left:23%;
+              margin-right:15%;
+              width:34%;
+            }
+
+            #participants{
+              justify-content : left;
+              align-items : left;
+              margin-left: 15%;
+              margin-right:15%;
+            margin-bottom: 50px;
+            }
+            #footer{
+                text-align:right;
+                font-size:12px;
+            }
+            #owner{
+                font-weight: bolder
+            }
+
+            
+
+
+            .logo-small {
+            color: #f4511e;
+            font-size: 50px;
+        }
+        #event_description{
+            margin-top:20px;
+            position:relative;
+            margin-left:15%;
+            width:auto;
+        }
+
+        #icon_description{
+            left:50%;
+        }
+
+        #description{
+            position:relative;
+            width:100%;
+            padding-left:15%;
+            padding-right:15%;
+            margin-left:0px;
+            margin-right:0px;
+        }
+
+        #container_titlu{
+            text-align: center;
+        }
+        
+        </style>
+
+</head>
+
+<body>
+
+  <div id="selected_activity_div">
+        <div class="container" id="container_titlu">
+            <div class="col-sm-12">
+              
+                <h1>Title: <%=title%></h3>
+                
+            </div>
+        </div>
+        <div class="row" id="event_description">
+                
+                <div class="col-sm-4">
+                    <span class="glyphicon glyphicon-user logo-small"></span>
+                    <h3>Number of persons:</h3>
+                    <h4><%=num_persons%></h4>
+                </div>
+                <div class="col-sm-4">
+                    <span class="glyphicon glyphicon-map-marker logo-small"></span>
+                    <h3>Location:</h3>
+                    <h4><%=location%></h4>
+                </div>
+                <div class="col-sm-4">
+                    <span class="glyphicon glyphicon-console logo-small"></span>
+                    <h3>Owner of the activity</h3>
+                    <h4><%=ownerName%></h4>
+                </div>
+            </div>
+            <div class="container">
+                    
+                    <h3 style="text-align: center"> Description:</h3>
+                    <h4  id="description" style="text-align: center">
+                        <%=description%>
+                    </h4>
+            </div>
+    <% if (loggedIn) {
+              var tokenUpdate = '/update/' + token; %>
+    <form id="button" method="POST" action="<%=tokenUpdate%>">
+      
+            <button type="submit" class="btn btn-primary" id="add_btn" style="text-align: center">Join activity</button>
+    </form>
+    <%}
+            else {%>
+    <form id="button" method="GET" action="/login">
+      
+        <button type="submit" class="btn btn-primary" id="add_btn" style="position:relative;left:45%">Join activity</button>
+      
+    </form>
+    <%}%>
+  </div>
+  <% var addComment = '/add-comment/' + token; %>
+  <form id="commentBox" class="form-inline" method="POST" action="<%=addComment%>">
+
+    <input type="text" name="comment" class="form-control mb-2 mr-sm-2" id="comment_entered" placeholder="Enter a comment..."
+      required />
+    <button type="submit" class="btn btn-primary mb-2">Add comment</button>
+  </form>
+  <div id="participants" class="col-6">
+        <h3> Participants list: </h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Username</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 0; i < participants.length; i++) {%>
+              <tr>
+                <th scope="row"><%=i+1%></th>
+                <td><%=participants[i]%></th>
+              </tr>
+            <%}%>
+          </tbody>
+        </table>
+    </div>
+    <div id="commentSection">
+        <h3 style="margin-left:20px">Comments:</h3>
+      <%for (var i=0; i<comments.length; i++){%>
+      <div class="jumbotron" id="comment">
+        <p id="owner">
+          <%=commentsOwners[i]%>
+        </p>
+        <p>
+          <%=comments[i]%>
+        </p>
+        <p id="footer">
+            <%=dates[i]%>
+        </p>
+      </div>
+      <%}%>
+    </div>
+</body>
+
+</html>
+=======
 <html>
 
 <head>
@@ -174,3 +362,4 @@
 </body>
 
 </html>
+>>>>>>> 1d3d93999deb23b2854ec68bec048a5a289cc1de
