@@ -30,13 +30,21 @@
               justify-content : left;
               align-items : left;
               margin-left: 20px;
-              height:100%;
+            margin-bottom: 50px;
+            }
+            #footer{
+                text-align:right;
+                font-size:12px;
+            }
+            #owner{
+                font-weight: bold;
             }
         </style>
 
 </head>
 
 <body>
+
   <div id="selected_activity_div">
     <h1 name="title" id="title">
       <%=title%>
@@ -74,19 +82,7 @@
       required />
     <button type="submit" class="btn btn-primary mb-2">Add comment</button>
   </form>
-    <div id="commentSection">
-      <%for (var i=0; i<comments.length; i++){%>
-      <div class="jumbotron" id="comment">
-        <p>
-          <%=commentsOwners[i]%>
-        </p>
-        <p>
-          <%=comments[i]%>
-        </p>
-      </div>
-      <%}%>
-    </div>
-    <div id="participants">
+  <div id="participants" class="col-6">
         <h3> Participants list: </h3>
         <table class="table table-striped">
           <thead>
@@ -104,6 +100,22 @@
             <%}%>
           </tbody>
         </table>
+    </div>
+    <div id="commentSection">
+        <h3 style="margin-left:20px">Comments:</h3>
+      <%for (var i=0; i<comments.length; i++){%>
+      <div class="jumbotron" id="comment">
+        <p id="owner">
+          <%=commentsOwners[i]%>
+        </p>
+        <p>
+          <%=comments[i]%>
+        </p>
+        <p id="footer">
+            <%=dates[i]%>
+        </p>
+      </div>
+      <%}%>
     </div>
 </body>
 
