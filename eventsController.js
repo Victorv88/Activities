@@ -14,6 +14,7 @@ var eventSchema = new mongoose.Schema({
     location: String,
     token: String,
     ownerToken: String,
+    ownerName: String,
     participants: Array,
     comments: Array,
     commentsOwners: Array
@@ -71,7 +72,7 @@ module.exports = function(app) {
         var token = createToken();
 
         var event = Event({title:title, description:event_description, num_persons:number_persons,
-          location:location, token:token, ownerToken: sess.token});
+          location:location, token:token, ownerToken: sess.token, ownerName: sess.username});
         event.save(function(err){
           if (err) throw err;
           console.log('The event has been saved.');
@@ -93,8 +94,7 @@ module.exports = function(app) {
       Event.findOne({token:token_param},function(err, result) {
           if (err) throw err;
           res.render('selected_activity_page',{title: result.title, description: result.description, num_persons: result.num_persons,
-             location: result.location, token: result.token, loggedIn:loggedIn, comments: result.comments, commentsOwners: result.commentsOwners});
-          res.end();
+             location: result.location, token: result.token, loggedIn:loggedIn, ownerName: result.ownerName, comments: result.comments, commentsOwners: result.commentsOwners, participants: result.participants});
       });
   });
 
@@ -141,7 +141,7 @@ module.exports = function(app) {
           else if (!result.participants.includes(sess.token))
           ok = true;
           if (ok) {
-            Event.updateOne({token: token_param}, {$push: {participants: sess.token}, $inc: {num_persons: -1}}, function(err) {
+            Event.updateOne({token: token_param}, {$push: {participants: sess.username}, $inc: {num_persons: -1}}, function(err) {
               if (err) throw err;
               console.log("Number of persons edited.");
               res.redirect('/');

@@ -18,16 +18,18 @@
             #comment{
               padding-top:20px;
               padding-bottom:20px;
+              margin-left:20px;
               width:85%;
             }
             #comment_entered{
               margin-left:20px;
               width:34%;
             }
-            
-            #members{
-               justify-content : right;
-              align-items : right;
+
+            #participants{
+              justify-content : left;
+              align-items : left;
+              margin-left: 20px;
               height:100%;
             }
         </style>
@@ -40,16 +42,18 @@
       <%=title%>
     </h1>
     <h3 name="description" id="description">
+      Description:
+      <br>
       <%=description%>
     </h3>
-    <h2 name="num_persons" id="num_persons">
-      <%=num_persons%>
-    </h2>
-    <h2 name="location" id="location">
-      <%=location%>
-    </h2>
-    <p name="token" id="token">
-      <%=token%>
+    <p name="owner" id="num_persons">
+      Owned by: <%=ownerName%>
+    </p>
+    <p name="num_persons" id="num_persons">
+      Number of participants: <%=num_persons%>
+    </p>
+    <p name="location" id="location">
+      Location: <%=location%>
     </p>
     <% if (loggedIn) {
               var tokenUpdate = '/update/' + token; %>
@@ -66,12 +70,11 @@
   <% var addComment = '/add-comment/' + token; %>
   <form id="commentBox" class="form-inline" method="POST" action="<%=addComment%>">
 
-    <input type="text" name="comment" class="form-control mb-2 mr-sm-2" id="comment_entered" placeholder="Enter a comment.."
+    <input type="text" name="comment" class="form-control mb-2 mr-sm-2" id="comment_entered" placeholder="Enter a comment..."
       required />
     <button type="submit" class="btn btn-primary mb-2">Add comment</button>
   </form>
-  <div class="modal-body row">
-    <div id="commentSection" class="col-md-6">
+    <div id="commentSection">
       <%for (var i=0; i<comments.length; i++){%>
       <div class="jumbotron" id="comment">
         <p>
@@ -83,39 +86,25 @@
       </div>
       <%}%>
     </div>
-    <div class="col-md-6">
+    <div id="participants">
+        <h3> Participants list: </h3>
         <table class="table table-striped">
-            <thead>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Username</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i = 0; i < participants.length; i++) {%>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="row"><%=i+1%></th>
+                <td><%=participants[i]%></th>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-              </tr>
-            </tbody>
-          </table>
+            <%}%>
+          </tbody>
+        </table>
     </div>
-  </div>
 </body>
 
 </html>

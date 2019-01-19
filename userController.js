@@ -76,7 +76,6 @@ module.exports.main = function(app) {
     }
   });
   app.get('/login', parser, function(req, res) {
-    sess = req.session;
     if (req.session.token) {
       res.redirect('/');
     }
@@ -86,7 +85,6 @@ module.exports.main = function(app) {
   });
   app.post('/login', parser, function(req, res) {
     ///Search for user's data in the database
-    sess = req.session;
     Data.findOne({username: req.body.username, password: req.body.password}).then(function(result) {
       ///If the data is found, log the user in, otherwise prompt them to the invalid log in credentials screen
       if (result === null) {
