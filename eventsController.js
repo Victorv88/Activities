@@ -17,7 +17,8 @@ var eventSchema = new mongoose.Schema({
     ownerName: String,
     participants: Array,
     comments: Array,
-    commentsOwners: Array
+    commentsOwners: Array,
+    commentsDates:Array
 });
 
 var Event = mongoose.model('Event', eventSchema);
@@ -90,19 +91,24 @@ module.exports = function(app) {
   app.get('/activity/:token',function(req,res){
       var token_param=req.params.token;
       var sess = req.session;
+      
       var loggedIn = (sess.token != null);
       Event.findOne({token:token_param},function(err, result) {
           if (err) throw err;
           res.render('selected_activity_page',{title: result.title, description: result.description, num_persons: result.num_persons,
-             location: result.location, token: result.token, loggedIn:loggedIn, ownerName: result.ownerName, comments: result.comments, commentsOwners: result.commentsOwners, participants: result.participants});
+             location: result.location, token: result.token, loggedIn:loggedIn, ownerName: result.ownerName, comments: result.comments, commentsOwners: result.commentsOwners, participants: result.participants,
+            dates:result.commentsDates});
       });
+    
   });
 
   app.post('/add-comment/:token', urlencodedParser, function(req, res) {
     var eventToken = req.params.token;
     var loggedIn = (req.session.token != null);
+    var date=new Date();
+    console.log(date);
     if (loggedIn) {
-      Event.findOneAndUpdate({token: eventToken}, {$push: {comments: req.body.comment, commentsOwners: req.session.username}}, function(err) {
+      Event.findOneAndUpdate({token: eventToken}, {$push: {comments: req.body.comment, commentsOwners: req.session.username, commentsDates: date}}, function(err) {
         if (err) throw err;
         console.log("Comment added.");
         res.redirect('/activity/' + eventToken);
