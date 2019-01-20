@@ -34,10 +34,30 @@ img{
         left:50%;
         margin-left:-168px;
         }
-    
+
     #iconbars{
         font-size:2em;
 
+    }
+
+    .searchMessages {
+        text-align: center;
+    }
+
+    .profile {
+      top: 0px;
+      right: 0px;
+      position: absolute;
+    }
+
+    #name1 {
+      text-align: center;
+      color: red;
+    }
+
+    #name2 {
+      text-align: center;
+      color: red;
     }
 
     .dropbtn {

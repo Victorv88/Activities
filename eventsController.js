@@ -60,9 +60,7 @@ module.exports = function(app) {
       var loggedIn = (sess.token != null);
       console.log(loggedIn);
       if (!loggedIn) {
-        var message = 'Command unavailable. You are not logged in.';
-        var title = 'Error';
-        res.render('messagePage.ejs', {message: message, title: title});
+        res.redirect('/login');
       }
       else {
         var sess = req.session;
@@ -78,7 +76,6 @@ module.exports = function(app) {
           if (err) throw err;
           console.log('The event has been saved.');
           res.redirect('/');
-          res.end();
         });
         userController.updateOwnedEvents(req, token);
       }
@@ -91,31 +88,37 @@ module.exports = function(app) {
   app.get('/activity/:token',function(req,res){
       var token_param=req.params.token;
       var sess = req.session;
-      
       var loggedIn = (sess.token != null);
+      var sessToken;
+      if (loggedIn) {
+        sessToken = req.session.token;
+      }
+      else {
+        sessToken = "none";
+      }
       Event.findOne({token:token_param},function(err, result) {
           if (err) throw err;
-          res.render('selected_activity_page',{title: result.title, description: result.description, num_persons: result.num_persons,
+          res.render('selected_activity_page',{title: result.title, description: result.description, num_persons: result.num_persons, username: req.session.username, userToken: sessToken, ownerToken: result.ownerToken,
              location: result.location, token: result.token, loggedIn:loggedIn, ownerName: result.ownerName, comments: result.comments, commentsOwners: result.commentsOwners, participants: result.participants,
-            dates:result.commentsDates});
+             dates: result.commentsDates});
       });
-    
   });
 
   app.post('/add-comment/:token', urlencodedParser, function(req, res) {
     var eventToken = req.params.token;
     var loggedIn = (req.session.token != null);
     var date=new Date();
+    var stringDate = date.toString();
     console.log(date);
     if (loggedIn) {
-      Event.findOneAndUpdate({token: eventToken}, {$push: {comments: req.body.comment, commentsOwners: req.session.username, commentsDates: date}}, function(err) {
+      Event.findOneAndUpdate({token: eventToken}, {$push: {comments: req.body.comment, commentsOwners: req.session.username, commentsDates: stringDate}}, function(err) {
         if (err) throw err;
         console.log("Comment added.");
         res.redirect('/activity/' + eventToken);
       });
     }
     else {
-      res.render('messagePage', {title: 'Error', message: 'Command unavailable. You are not logged in.'});
+      res.redirect('/login');
     }
   });
 
@@ -123,10 +126,10 @@ module.exports = function(app) {
 
   app.post('/delete/:token',urlencodedParser,function(req,res){
       var token_param=req.params.token;
-      Event.remove({token:token_param},function(err){
+      Event.findOneAndDelete({token:token_param},function(err){
           if (err) throw err;
           console.log("Event deleted");
-          res.end("OK");
+          res.redirect('/');
       });
   });
 
@@ -137,49 +140,68 @@ module.exports = function(app) {
       var sess = req.session;
       Event.findOne({token: token_param}, function(err, result) {
         if (err) throw err;
-        if (result.ownerToken == sess.token) {
+        if (result.ownerToken === sess.token) {
           res.render('messagePage', {title:"Error", message: "You are the owner of the event."});
         }
         else {
-          var ok = false;
-          if (result.participants == undefined)
-          ok = true;
-          else if (!result.participants.includes(sess.token))
-          ok = true;
-          if (ok) {
-            Event.updateOne({token: token_param}, {$push: {participants: sess.username}, $inc: {num_persons: -1}}, function(err) {
-              if (err) throw err;
-              console.log("Number of persons edited.");
-              res.redirect('/');
-            });
-            userController.updateJoinedEvents(req, token_param);
-          }
-          else {
-            res.render('messagePage', {title: "Error", message: "You have already joined this event."});
-          }
+          Event.updateOne({token: token_param}, {$push: {participants: sess.username}, $inc: {num_persons: -1}}, function(err) {
+            if (err) throw err;
+            console.log("Number of persons edited.");
+            res.redirect('/');
+          });
+          userController.updateJoinedEvents(req, token_param);
         }
       });
   });
 
   app.get('/', function(req,res) {
       var loggedIn = (req.session.token != null);
+      var sessToken, sessUsername;
+      if (loggedIn) {
+        sessToken = req.session.token;
+        sessUsername = req.session.username;
+      }
+      else {
+        sessToken = null;
+        sessUsername = null;
+      }
       Event.find({},function(err,data){
           if (err) throw err;
-          res.render('activities_page', {events: data, loggedIn: loggedIn});
+          res.render('activities_page', {events: data, loggedIn: loggedIn, userToken: sessToken, pageTitle:"Home", number: 0, username: sessUsername});
       });
   });
   app.get('/my-activities', function(req, res) {
     var loggedIn = (req.session.token != null);
+    var sessToken;
+    var sessToken, sessUsername;
+    if (loggedIn) {
+      sessToken = req.session.token;
+      sessUsername = req.session.username;
+    }
+    else {
+      sessToken = null;
+      sessUsername = null;
+    }
     Event.find({ownerToken: req.session.token}, function(err, data) {
       if (err) throw err;
-      res.render('activities_page', {events: data, loggedIn: loggedIn});
+      res.render('activities_page', {events: data, loggedIn: loggedIn, userToken: sessToken, pageTitle:"My activities", number: 1, username: sessUsername});
     });
   });
   app.get('/joined-activities', function(req, res) {
     var loggedIn = (req.session.token != null);
-    Event.find({participants: req.session.token}, function(err, data) {
+    var sessToken;
+    var sessToken, sessUsername;
+    if (loggedIn) {
+      sessToken = req.session.token;
+      sessUsername = req.session.username;
+    }
+    else {
+      sessToken = null;
+      sessUsername = null;
+    }
+    Event.find({participants: req.session.username}, function(err, data) {
       if (err) throw err;
-      res.render('activities_page', {events:data, loggedIn: loggedIn});
+      res.render('activities_page', {events: data, loggedIn: loggedIn, userToken: sessToken, pageTitle:"Joined activities", number: 2, username: sessUsername});
     });
   });
 };

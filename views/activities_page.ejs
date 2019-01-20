@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Activities</title>
+    <title><%=pageTitle%></title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -51,28 +51,54 @@
                 <a href="/add">Add new activity</a>
             </div>
         </div>
+        <div class="profile">
+          <% if (loggedIn) { %>
+            <div class = "col" id="name1">
+              <a class><%=username%></a>
+            </div>
+            <div class = "col">
+              <a href='/logout'>Logout</a>
+            </div>
+          <% }
+          else { %>
+            <div class = "col" id="name2">
+              <a class>Guest</a>
+            </div>
+            <div class = "col">
+              <a href='/login'>Login</a>
+              <a> | </a>
+              <a href='/register'>Register</a>
+            </div>
+          <% } %>
+        </div>
     </div>
-    </div>
-
-        <div class="row" id="form_cautare">
-            <div class="col-5">
-                <div class="form-row">
-                    <div class="col-6" id="text_inp">
-                        <input id="search_input" style="display:inline" type="text" class="form-control" placeholder="Search an activity">
-                    </div>
-                    <div class="form-group mb-2 mr-sm-2">
-                        <select id="inputState" class="form-control">
-                            <option selected>Title</option>
-                            <option>Number of persons</option>
-                            <option>Location</option>
-                            <option>Owner of the event</option>
-                        </select>
-                    </div>
-                    <button id="btn" style="display:inline" type="submit" class="btn btn-primary" onclick="filterFunction()">Search</button>
+    <div class="row" id="form_cautare">
+        <div class="col-5">
+            <div class="form-row">
+                <div class="col-6" id="text_inp">
+                    <input id="search_input" style="display:inline" type="text" class="form-control" placeholder="Search an activity">
                 </div>
+                <div class="form-group mb-2 mr-sm-2">
+                    <select id="inputState" class="form-control">
+                        <option selected>Title</option>
+                        <option>Number of persons</option>
+                        <option>Location</option>
+                        <option>Owner of the event</option>
+                    </select>
+                </div>
+                <button id="btn" style="display:inline" type="submit" class="btn btn-primary" onclick="filterFunction()">Search</button>
             </div>
         </div>
-
+    </div>
+    <div class="searchMessages">
+      <% if (number === 1 && events.length === 0) { %>
+        <h4 id="messageOwned">You do not own any activities.</h4>
+      <% }
+      else if (number === 2 && events.length === 0) { %>
+        <h4 id="messageJoined">You have not joined any activities.</h4>
+      <% } %>
+      <h4 id="messageNotFound" style="display:none">No results found.</h4>
+    </div>
     <div class="card-group" id="block_activity">
         <%for (var i=0; i<events.length; i++){%>
         <div class="col-4">
@@ -81,9 +107,16 @@
                     <h4 class="card-title" id="title">
                         <%=events[i].title%>
                     </h4>
-                    <p class="card-text-d" id="description">
+                    <% if (userToken === events[i].ownerToken) { %>
+                      <p name="owner" id="num_persons">
+                        Owned by: me
+                      </p>
+                    <% }
+                    else { %>
+                      <p name="owner" id="num_persons">
                         Owned by: <%=events[i].ownerName%>
-                    </p>
+                      </p>
+                    <% } %>
                     <p class="card-text-n" id="num_persons">
                         Number of participants: <%=events[i].num_persons%>
                     </p>
@@ -100,14 +133,14 @@
 
     <script>
         function filterFunction() {
-            var input, filter, optiune_aleasa, card_group, txt_value, grupa, optiuni;
-            var valoare_aleasa_cautare;
+            var input, filter, optiune_aleasa, card_group, txt_value, grupa, optiuni, valoare_aleasa_cautare, message;
             optiuni = document.getElementById("inputState");
             valoare_aleasa_cautare = optiuni.selectedIndex;
             input = document.getElementById("search_input");
             filter = input.value.toUpperCase();
             card_group = document.getElementById("block_activity");
             grupa = card_group.getElementsByClassName("col-4");
+            message = document.getElementById("messageNotFound");
             if (valoare_aleasa_cautare == 0) {
 
                 optiune_aleasa = card_group.getElementsByTagName("h4");
@@ -125,16 +158,23 @@
                 optiune_aleasa=card_group.getElementsByClassName("card-text-d");
             }
 
-            var ind = 0, l = optiune_aleasa.length;
-                while (ind < l) {
-                    txtValue = optiune_aleasa[ind].textContent || optiune_aleasa[ind].innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        grupa[ind].style.display = "";
-                    } else {
-                        grupa[ind].style.display = "none";
-                    }
-                    ind++;
-                }
+            var ind = 0, l = optiune_aleasa.length, found = false;
+            while (ind < l) {
+              txtValue = optiune_aleasa[ind].textContent || optiune_aleasa[ind].innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                grupa[ind].style.display = "";
+                found = true;
+              } else {
+                grupa[ind].style.display = "none";
+              }
+              ind++;
+            }
+            if (found) {
+              message.style.display = "none";
+            }
+            else {
+              message.style.display = "";
+            }
         }
     </script>
 

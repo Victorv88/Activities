@@ -2,23 +2,32 @@
   <head>
     <title>Register Page</title>
     <link rel="stylesheet" type="text/css" href="../styles/register_styles.css">
-    <style>
-      #errorMessages {
-        display: block;
-        background: #af0712;
-        color: #167dcc;
-      }
-    </style>
+    <% if (isSuccess) { %>
+      <script>
+        setTimeout(function () {
+           window.location = "/login";
+        }, 2000)
+      </script>
+    <% } %>
   </head>
   <body>
       <div class="register">
-        <% if (errors) {%>
-          <div class="errorMessages">
-          <%errors.forEach(function(message) {%>
-            <p><%=message%></p>
-          <%})%>
-          </div>
-        <%}%>
+        <%  if (errors) {
+          if (isSuccess) {%>
+            <div class="success">
+              <%errors.forEach(function(message) {%>
+                <p><%=message%></p>
+                <%})%>
+              </div>
+              <% }
+              else { %>
+                <div class="error">
+                  <%errors.forEach(function(message) {%>
+                    <p><%=message%></p>
+                    <%})%>
+                  </div>
+                  <% }
+        } %>
         <div class="register-triangle"></div>
 
         <h2 class="register-header">Sign Up</h2>

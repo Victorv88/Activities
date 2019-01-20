@@ -6,6 +6,8 @@ img{
     height: 70px;
     width:100%;
     background:#1A1A1A;
+    position: relative;
+    z-index: 100000;
 }
 
 #search-activity, #my-activities, #activities-going{

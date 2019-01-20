@@ -5,6 +5,11 @@
   </head>
   <body>
       <div class="login">
+        <% if (error) { %>
+          <div class="error">
+            <p><%=error%></p>
+          </div>
+          <% } %>
         <div class="login-triangle"></div>
 
         <h2 class="login-header">Log In</h2>

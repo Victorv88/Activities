@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Adaugare</title>
+    <title>Add activity</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
@@ -50,7 +50,7 @@
     </style>
 
     <script>
-        /* When the user clicks on the button, 
+        /* When the user clicks on the button,
         toggle between hiding and showing the dropdown content */
         function myFunction() {
             document.getElementById("myDropdown").classList.toggle("show");
@@ -75,14 +75,15 @@
 
 <body>
     <div class="top-bar">
-        <img src="./Logo.png" width="168" height="58" />
+        <a href="/"><img src="./Logo.png" width="168" height="58"/></a>
         <div class="dropdown" id="menu">
             <button onclick="myFunction()" class="dropbtn"><i class="fa fa-bars" id="iconbars"></i>
             </button>
             <div id="myDropdown" class="dropdown-content">
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
+                <a href="/">Home</a>
+                <a href="/my-activities">My activities</a>
+                <a href="/joined-activities">Joined activities</a>
+                <a href="/add">Add new activity</a>
             </div>
         </div>
     </div>
@@ -93,20 +94,19 @@
         <form id="add_event" method="POST" action="/add">
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="Enter the title of your activity">
+                <input type="text" class="form-control" id="title" name="title" required placeholder="Enter the title of your activity...">
             </div>
             <div class="form-group">
                 <label for="event_description">Description</label>
-                <input type="text" class="form-control" id="event_description" name="event_description" placeholder="Enter the email">
-
+                <input type="text" class="form-control" id="event_description" name="event_description" required placeholder="Enter a description...">
             </div>
             <div class="form-group">
                 <label for="number_persons">Number of persons</label>
-                <input type="number" class="form-control" id="number_persons" name="number_persons" placeholder="Enter the number of persons">
+                <input type="number" class="form-control" id="number_persons" name="number_persons" min=1 max=999 required placeholder="Enter the number of persons...">
             </div>
             <div class="form-group">
                 <label for="location">Location</label>
-                <input type="text" class="form-control" id="location" name="location" placeholder="Enter the location">
+                <input type="text" class="form-control" id="location" name="location" required placeholder="Enter the location...">
             </div>
             <button type="submit" class="btn btn-primary" id="add_btn">Submit</button>
         </form>
